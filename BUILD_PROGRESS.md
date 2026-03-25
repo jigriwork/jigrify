@@ -59,3 +59,15 @@
 
 ### Current Status
 - Phase 1 implementation complete and production-build passing
+
+## Phase 2A: Supabase Auth Backbone + Protected App Flow
+
+### Block 1 — Auth Wiring ✅
+- Replaced client-only mock auth behavior with real server actions for Supabase:
+  - login (`signInWithPassword`)
+  - signup (`signUp`)
+  - logout (`signOut`)
+- Added clean server-side validation/error responses for auth forms
+- Updated auth form to use `useActionState` with pending and field-level error states
+- Added safe post-login redirect handling via `next` param (restricted to `/app/*`)
+- Added `/auth/logout` POST route for reliable sign out from app shell forms
