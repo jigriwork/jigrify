@@ -3,10 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { Avatar } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { appNavItems } from "@/lib/navigation";
 import { cn } from "@/utils/cn";
 
-export function AppSidebar() {
+type AppSidebarProps = {
+  userDisplayName: string;
+  username?: string | null;
+  avatarUrl?: string | null;
+};
+
+export function AppSidebar({ userDisplayName, username, avatarUrl }: AppSidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -35,6 +43,23 @@ export function AppSidebar() {
           );
         })}
       </nav>
+
+      <div className="mt-8 rounded-2xl border border-white/15 bg-white/5 p-3">
+        <div className="flex items-center gap-3">
+          <Avatar src={avatarUrl ?? undefined} fallback={userDisplayName} className="h-10 w-10" />
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold text-white">{userDisplayName}</p>
+            <p className="truncate text-xs text-slate-400">
+              {username ? `@${username}` : "Profile pending"}
+            </p>
+          </div>
+        </div>
+        <form action="/auth/logout" method="post" className="mt-3">
+          <Button variant="outline" className="w-full">
+            Sign out
+          </Button>
+        </form>
+      </div>
     </aside>
   );
 }

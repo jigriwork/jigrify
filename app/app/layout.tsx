@@ -1,12 +1,24 @@
+import { getCurrentViewer } from "@/lib/supabase/profile";
+
 import { AppBottomNav, AppSidebar } from "@/components/layout/app-nav";
 import { AppTopbar } from "@/components/layout/app-topbar";
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  const { user, profile } = await getCurrentViewer();
+
   return (
     <div className="min-h-dvh lg:flex">
-      <AppSidebar />
+      <AppSidebar
+        userDisplayName={profile?.full_name ?? user?.email ?? "Creator"}
+        username={profile?.username}
+        avatarUrl={profile?.avatar_url}
+      />
       <div className="flex min-h-dvh flex-1 flex-col">
-        <AppTopbar />
+        <AppTopbar
+          userDisplayName={profile?.full_name ?? user?.email ?? "Creator"}
+          username={profile?.username}
+          avatarUrl={profile?.avatar_url}
+        />
         <main className="flex-1 px-4 pb-24 pt-6 sm:px-6">{children}</main>
       </div>
       <AppBottomNav />

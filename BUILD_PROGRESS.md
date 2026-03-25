@@ -92,3 +92,17 @@
   - public read (`select`)
   - own insert (`insert` where `auth.uid() = id`)
   - own update (`update` where `auth.uid() = id`)
+
+### Block 4 — Onboarding + Session-Aware UI ✅
+- Added `/app/onboarding` flow with premium profile-completion form
+- Collected and validated:
+  - username (format + uniqueness)
+  - full/display name
+  - optional bio
+- Added onboarding server action to persist profile completion in Supabase
+- Updated `/app` shell to hydrate current viewer/profile data server-side
+- Updated app sidebar + topbar to reflect logged-in identity:
+  - avatar
+  - display name / username
+  - sign out actions
+- Updated `/app/profile` to render real profile data instead of static placeholder data

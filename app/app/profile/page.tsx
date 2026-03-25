@@ -1,3 +1,5 @@
+import { getCurrentViewer } from "@/lib/supabase/profile";
+
 import { Avatar } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 
@@ -7,21 +9,29 @@ const statCards = [
   { label: "Reels", value: "127" },
 ];
 
-export default function ProfilePage() {
+export default async function ProfilePage() {
+  const { user, profile } = await getCurrentViewer();
+
+  const displayName = profile?.full_name ?? user?.email ?? "Creator";
+  const handle = profile?.username ? `@${profile.username}` : "@pending_profile";
+  const bio = profile?.bio ?? "Complete your onboarding to add your vibe.";
+
   return (
     <section className="mx-auto max-w-3xl space-y-5">
       <Card className="p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
-            <Avatar fallback="ZK" className="h-16 w-16 text-base" />
+            <Avatar
+              src={profile?.avatar_url ?? undefined}
+              fallback={displayName}
+              className="h-16 w-16 text-base"
+            />
             <div>
-              <h2 className="text-xl font-bold text-white">Ziya Khan</h2>
-              <p className="text-sm text-slate-300">@ziyaknights • Creator • Delhi</p>
+              <h2 className="text-xl font-bold text-white">{displayName}</h2>
+              <p className="text-sm text-slate-300">{handle} • Creator</p>
             </div>
           </div>
-          <p className="max-w-sm text-sm text-slate-200">
-            Building daily reels around code, fashion, and chaotic campus life ✨
-          </p>
+          <p className="max-w-sm text-sm text-slate-200">{bio}</p>
         </div>
       </Card>
 
@@ -36,9 +46,7 @@ export default function ProfilePage() {
 
       <Card className="p-5">
         <h3 className="text-lg font-semibold text-white">Bio vibes</h3>
-        <p className="mt-2 text-sm text-slate-300">
-          “Design loud. Ship fast. Stay kind.”
-        </p>
+        <p className="mt-2 text-sm text-slate-300">{bio}</p>
       </Card>
     </section>
   );
