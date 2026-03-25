@@ -71,3 +71,13 @@
 - Updated auth form to use `useActionState` with pending and field-level error states
 - Added safe post-login redirect handling via `next` param (restricted to `/app/*`)
 - Added `/auth/logout` POST route for reliable sign out from app shell forms
+
+### Block 2 — Route Protection + Session Routing ✅
+- Migrated deprecated `middleware.ts` convention to Next.js 16 `proxy.ts`
+- Added protected route redirect logic:
+  - unauthenticated users hitting `/app/*` are redirected to `/auth/login?next=...`
+  - authenticated users visiting `/auth/login` or `/auth/signup` are redirected to `/app/home`
+- Added onboarding-aware routing:
+  - authenticated users without username are redirected to `/app/onboarding`
+  - authenticated users with completed profile are redirected away from onboarding to `/app/home`
+- Improved Supabase proxy helper to return refreshed user/session context safely

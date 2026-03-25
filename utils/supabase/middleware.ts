@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+import type { User } from "@supabase/supabase-js";
 import { type NextRequest, NextResponse } from "next/server";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -6,7 +7,7 @@ const supabaseKey =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY ??
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export const createClient = (request: NextRequest) => {
+export const createClient = async (request: NextRequest) => {
   let supabaseResponse = NextResponse.next({
     request: {
       headers: request.headers,
@@ -14,7 +15,11 @@ export const createClient = (request: NextRequest) => {
   });
 
   if (!supabaseUrl || !supabaseKey) {
-    return supabaseResponse;
+    return {
+      response: supabaseResponse,
+      supabase: null,
+      user: null as User | null,
+    };
   }
 
   const supabase = createServerClient(supabaseUrl, supabaseKey, {
@@ -35,7 +40,9 @@ export const createClient = (request: NextRequest) => {
   });
 
   // Refresh auth session if needed; updated cookies are written through setAll.
-  void supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  return supabaseResponse;
+  return { response: supabaseResponse, supabase, user };
 };
