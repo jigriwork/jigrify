@@ -9,7 +9,10 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase/client";
+import {
+  createClient as createSupabaseBrowserClient,
+  isSupabaseConfigured,
+} from "@/utils/supabase/client";
 
 const authSchema = z.object({
   identifier: z.string().min(3, "Enter email or phone"),
@@ -38,7 +41,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const onSubmit = async (values: AuthValues) => {
     setLoading(true);
 
-    const supabase = getSupabaseBrowserClient();
+    const supabase = createSupabaseBrowserClient();
     if (!supabase) {
       setMessage(
         "Supabase keys missing. Add env variables to enable live authentication.",
