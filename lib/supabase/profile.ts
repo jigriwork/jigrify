@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { cookies } from "next/headers";
 
+import { isProfilesTableSchemaCacheError } from "@/lib/supabase/error-messages";
 import { createClient } from "@/utils/supabase/server";
 
 export type UserProfile = {
@@ -28,11 +29,17 @@ export const getCurrentViewer = cache(async () => {
     return { user: null, profile: null as UserProfile | null };
   }
 
-  const { data: profile } = await supabase
+  const { data: profile, error } = await supabase
     .from("profiles")
     .select("id, username, full_name, avatar_url, bio, created_at, updated_at")
     .eq("id", user.id)
     .maybeSingle<UserProfile>();
 
-  return { user, profile: profile ?? null };
+  const profileErrorMessage = error
+    ? isProfilesTableSchemaCacheError(error.message)
+      ? "We're finishing profile setup in the background. Please refresh in a moment."
+      : "We couldn't load your profile right now."
+    : null;
+
+  return { user, profile: profile ?? null, profileErrorMessage };
 });

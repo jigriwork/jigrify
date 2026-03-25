@@ -4,6 +4,10 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+import {
+  getFriendlyProfileError,
+  isProfilesTableSchemaCacheError,
+} from "@/lib/supabase/error-messages";
 import { createClient } from "@/utils/supabase/server";
 
 const onboardingSchema = z.object({
@@ -19,6 +23,7 @@ const onboardingSchema = z.object({
 
 export type OnboardingState = {
   message: string | null;
+  tone?: "error" | "success" | "info";
   fieldErrors?: {
     username?: string[];
     fullName?: string[];
@@ -38,14 +43,18 @@ export async function completeOnboardingAction(
 
   if (!parsed.success) {
     return {
-      message: "Please fix the highlighted fields.",
+      message: "Almost there — please fix the highlighted details.",
+      tone: "error",
       fieldErrors: parsed.error.flatten().fieldErrors,
     };
   }
 
   const supabase = createClient(await cookies());
   if (!supabase) {
-    return { message: "Supabase is not configured. Add environment keys first." };
+    return {
+      message: "Profile setup is temporarily unavailable. Please try again in a moment.",
+      tone: "error",
+    };
   }
 
   const {
@@ -53,7 +62,7 @@ export async function completeOnboardingAction(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { message: "Session expired. Please log in again." };
+    return { message: "Your session expired. Please log in again.", tone: "error" };
   }
 
   const normalizedUsername = parsed.data.username.toLowerCase();
@@ -66,7 +75,7 @@ export async function completeOnboardingAction(
     .maybeSingle<{ id: string }>();
 
   if (lookupError) {
-    return { message: lookupError.message };
+    return { message: getFriendlyProfileError(lookupError), tone: "error" };
   }
 
   if (existing) {
@@ -87,7 +96,12 @@ export async function completeOnboardingAction(
   );
 
   if (updateError) {
-    return { message: updateError.message };
+    return {
+      message: isProfilesTableSchemaCacheError(updateError.message)
+        ? "We’re preparing your account in the background. Please wait a few seconds and try again."
+        : getFriendlyProfileError(updateError),
+      tone: "error",
+    };
   }
 
   redirect("/app/home");

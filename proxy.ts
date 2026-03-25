@@ -20,11 +20,15 @@ export async function proxy(request: NextRequest) {
   }
 
   if (user && supabase && isProtectedAppRoute && !pathname.startsWith("/app/onboarding")) {
-    const { data: profile } = await supabase
+    const { data: profile, error } = await supabase
       .from("profiles")
       .select("username")
       .eq("id", user.id)
       .maybeSingle<{ username: string | null }>();
+
+    if (error) {
+      return response;
+    }
 
     if (!profile?.username) {
       return NextResponse.redirect(new URL("/app/onboarding", request.url));
@@ -33,11 +37,15 @@ export async function proxy(request: NextRequest) {
 
   if (user && pathname.startsWith("/app/onboarding")) {
     if (supabase) {
-      const { data: profile } = await supabase
+      const { data: profile, error } = await supabase
         .from("profiles")
         .select("username")
         .eq("id", user.id)
         .maybeSingle<{ username: string | null }>();
+
+      if (error) {
+        return response;
+      }
 
       if (profile?.username) {
         return NextResponse.redirect(new URL("/app/home", request.url));

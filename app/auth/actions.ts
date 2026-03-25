@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+import { getFriendlyAuthError } from "@/lib/supabase/error-messages";
 import { createClient } from "@/utils/supabase/server";
 
 const authSchema = z.object({
@@ -14,6 +15,7 @@ const authSchema = z.object({
 
 export type AuthActionState = {
   message: string | null;
+  tone?: "error" | "success" | "info";
   fieldErrors?: {
     email?: string[];
     password?: string[];
@@ -32,7 +34,8 @@ export async function loginAction(
 
   if (!parsed.success) {
     return {
-      message: "Fix the highlighted fields and try again.",
+      message: "Please check your email and password and try again.",
+      tone: "error",
       fieldErrors: parsed.error.flatten().fieldErrors,
     };
   }
@@ -40,7 +43,8 @@ export async function loginAction(
   const supabase = createClient(await cookies());
   if (!supabase) {
     return {
-      message: "Supabase is not configured. Add environment keys to enable auth.",
+      message: "Sign in is temporarily unavailable. Please try again soon.",
+      tone: "error",
     };
   }
 
@@ -51,7 +55,8 @@ export async function loginAction(
 
   if (error) {
     return {
-      message: error.message,
+      message: getFriendlyAuthError(error),
+      tone: "error",
     };
   }
 
@@ -76,7 +81,8 @@ export async function signupAction(
 
   if (!parsed.success) {
     return {
-      message: "Fix the highlighted fields and continue.",
+      message: "Please fix the highlighted fields and continue.",
+      tone: "error",
       fieldErrors: parsed.error.flatten().fieldErrors,
     };
   }
@@ -84,7 +90,8 @@ export async function signupAction(
   const supabase = createClient(await cookies());
   if (!supabase) {
     return {
-      message: "Supabase is not configured. Add environment keys to enable auth.",
+      message: "Sign up is temporarily unavailable. Please try again soon.",
+      tone: "error",
     };
   }
 
@@ -100,13 +107,15 @@ export async function signupAction(
 
   if (error) {
     return {
-      message: error.message,
+      message: getFriendlyAuthError(error),
+      tone: "error",
     };
   }
 
   if (!data.session) {
     return {
-      message: "Account created. Check your email and then log in.",
+      message: "Check your email to verify your account.",
+      tone: "success",
     };
   }
 
