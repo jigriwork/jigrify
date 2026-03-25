@@ -81,3 +81,14 @@
   - authenticated users without username are redirected to `/app/onboarding`
   - authenticated users with completed profile are redirected away from onboarding to `/app/home`
 - Improved Supabase proxy helper to return refreshed user/session context safely
+
+### Block 3 — Profiles Schema + Bootstrap ✅
+- Added Supabase SQL migration: `supabase/migrations/20260325193000_profiles_foundation.sql`
+- Introduced `profiles` table with core columns:
+  - `id`, `username`, `full_name`, `avatar_url`, `bio`, `created_at`, `updated_at`
+- Added username format constraint and update timestamp trigger
+- Added auth trigger (`handle_new_user_profile`) to auto-bootstrap profile rows on first signup
+- Enabled RLS and added baseline policies:
+  - public read (`select`)
+  - own insert (`insert` where `auth.uid() = id`)
+  - own update (`update` where `auth.uid() = id`)
