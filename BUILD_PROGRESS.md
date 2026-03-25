@@ -106,3 +106,18 @@
   - display name / username
   - sign out actions
 - Updated `/app/profile` to render real profile data instead of static placeholder data
+
+## Phase 2A Fix + UX Polish Pass (Pre-2B)
+
+### Block 1 — Profiles Table / Schema Cache Fix ✅
+- Investigated the live Supabase project mismatch and confirmed root cause:
+  - local migration existed (`20260325193000_profiles_foundation.sql`)
+  - remote project `kyiykpcfhxxqcravtflh` had not applied it yet
+  - PostgREST returned `PGRST205` (`public.profiles` missing in schema cache)
+- Linked repo to the correct Supabase project ref and audited migration status.
+- Applied migration to remote via `supabase db push`.
+- Re-verified migration parity (`local == remote`) with `supabase migration list`.
+- Re-verified table availability from the configured project URL using REST (`/rest/v1/profiles`) — now returns data (`[]`) instead of schema-cache error.
+- Added local ignore rule for Supabase CLI temp artifacts (`/supabase/.temp`) to keep repo clean.
+
+
