@@ -44,7 +44,7 @@ export function AppTopbar({ userDisplayName, username, avatarUrl }: AppTopbarPro
             <div className="min-w-0">
               <p className="truncate text-xs font-semibold text-white">{userDisplayName}</p>
               <p className="truncate text-[11px] text-slate-400">
-                {username ? `@${username}` : "Complete profile"}
+                {username ? `@${username}` : "Finish setup"}
               </p>
             </div>
           </div>

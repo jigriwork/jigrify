@@ -120,4 +120,40 @@
 - Re-verified table availability from the configured project URL using REST (`/rest/v1/profiles`) — now returns data (`[]`) instead of schema-cache error.
 - Added local ignore rule for Supabase CLI temp artifacts (`/supabase/.temp`) to keep repo clean.
 
+### Block 2 — Auth Flow Reliability + Friendly Feedback ✅
+- Added centralized Supabase error mapping helpers to convert low-level auth/profile failures into clean user-facing messages.
+- Updated login and signup server actions with polished, human feedback states:
+  - invalid credentials
+  - verification-required state
+  - duplicate account attempts
+  - temporary auth unavailability
+- Added structured feedback tone support in auth + onboarding action states.
+- Hardened onboarding save action error handling to avoid leaking raw backend errors.
+- Added safe profile fetch fallback messaging when profile data is temporarily unavailable.
+- Updated `proxy.ts` onboarding checks to fail gracefully when profile lookup errors occur (prevents brittle redirect loops).
+
+### Block 3 — Auth + Onboarding UX Redesign ✅
+- Reworked auth layout composition to remove dead space and improve desktop visual balance.
+- Refined login/signup form UX with:
+  - stronger hierarchy and spacing
+  - icon-supported inputs
+  - password show/hide toggle
+  - forgot-password placeholder action
+  - cleaner button/feedback states
+  - improved social sign-in placeholders
+- Rebuilt onboarding into a premium identity setup flow:
+  - upgraded card styling and visual hierarchy
+  - profile setup framing with step cue
+  - helper-led username/display-name inputs
+  - optional avatar placeholder action
+  - clearer completion CTA and improved state messaging
+
+### Block 4 — Copy Cleanup + App Polish ✅
+- Removed internal/dev-facing copy from user-visible surfaces.
+- Updated product copy tone across auth and app shell surfaces for polished, social-ready messaging.
+- Replaced low-confidence placeholders (e.g., pending profile labels) with cleaner user-facing phrasing.
+- Added safe compatibility rollback for Next.js runtime by keeping `proxy.ts` as the single routing guard entry (avoids duplicate middleware/proxy conflict).
+
+
+
 

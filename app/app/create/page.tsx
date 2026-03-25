@@ -42,8 +42,7 @@ export default function CreatePage() {
 
       <Modal open={openModal} onClose={() => setOpenModal(false)} title="Post Preview">
         <p className="text-sm text-slate-200">
-          This preview modal is wired and animated. Publishing flow will connect to
-          Supabase storage + database in Phase 2.
+          Preview how your post feels before sharing. Publishing tools will be available soon.
         </p>
       </Modal>
 

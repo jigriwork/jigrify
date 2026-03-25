@@ -14,11 +14,10 @@ export default function AppRootPage() {
   return (
     <section className="space-y-5">
       <Card>
-        <p className="text-xs uppercase tracking-[0.2em] text-purple-300">Dashboard Entry</p>
-        <h2 className="mt-2 text-3xl font-black text-white">Welcome to the JIGRIFY App Shell</h2>
+        <p className="text-xs uppercase tracking-[0.2em] text-purple-300">Your space</p>
+        <h2 className="mt-2 text-3xl font-black text-white">Welcome back to JIGRIFY</h2>
         <p className="mt-2 max-w-2xl text-sm text-slate-300">
-          This route works as your internal app hub. Use the quick links below to jump
-          between all Phase 1 demo screens.
+          Jump between your key spaces and pick up where you left off.
         </p>
       </Card>
 

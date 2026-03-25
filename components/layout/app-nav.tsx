@@ -50,7 +50,7 @@ export function AppSidebar({ userDisplayName, username, avatarUrl }: AppSidebarP
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold text-white">{userDisplayName}</p>
             <p className="truncate text-xs text-slate-400">
-              {username ? `@${username}` : "Profile pending"}
+              {username ? `@${username}` : "Finish setup"}
             </p>
           </div>
         </div>

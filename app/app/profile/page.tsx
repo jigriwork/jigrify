@@ -10,14 +10,19 @@ const statCards = [
 ];
 
 export default async function ProfilePage() {
-  const { user, profile } = await getCurrentViewer();
+  const { user, profile, profileErrorMessage } = await getCurrentViewer();
 
   const displayName = profile?.full_name ?? user?.email ?? "Creator";
-  const handle = profile?.username ? `@${profile.username}` : "@pending_profile";
-  const bio = profile?.bio ?? "Complete your onboarding to add your vibe.";
+  const handle = profile?.username ? `@${profile.username}` : "@newcreator";
+  const bio = profile?.bio ?? "Tell your story and let people know what you’re building.";
 
   return (
     <section className="mx-auto max-w-3xl space-y-5">
+      {profileErrorMessage ? (
+        <div className="rounded-2xl border border-amber-300/35 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+          {profileErrorMessage}
+        </div>
+      ) : null}
       <Card className="p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
